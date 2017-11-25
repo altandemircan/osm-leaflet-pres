@@ -48,6 +48,113 @@ http://openlayers.org/
 <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js">
 <div id="mapid" style="height: 300px;"></div>
 <script>
-    var mymap = L.map('mapid').setView([55.033362, 82.904828], 13);
+    var map = L.map('mapid').setView([55.033362, 82.904828], 13);
 </script>
-Будет показана карта.
+Будет показана карта. Но без тайлов.
+
+Добавить слой тайлов:
+L.tileLayer('//gis.emdev.ru/osm_tiles/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+    maxZoom: 18
+}).addTo(map);
+Рассказать про структуру урла, что можно и другие штуки подставлять.
+Что яндексовые тайлы не подходят.
+Можно использовать WMS и TMS.
+
+Штатный контрол для управления слоями:
+L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+Добавить маркер:
+var marker = L.marker([55.033362, 82.904828]).addTo(map);
+
+Добавить круг:
+var circle = L.circle([55.033462, 82.904928], {
+    color: 'red',
+    fillColor: '#f03',
+    fillOpacity: 0.5,
+    radius: 500
+}).addTo(map);
+
+Добавить многоугольник:
+var polygon = L.polygon([
+    [55.033662, 82.905928],
+    [55.033682, 82.906928],
+    [55.034662, 82.909928],
+]).addTo(map);
+
+Приделать к объектам балуны:
+marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+circle.bindPopup("I am a circle.");
+polygon.bindPopup("I am a polygon.");
+
+Используется чейнинг:
+var popup = L.popup()
+    .setLatLng([51.5, -0.09])
+    .setContent("I am a standalone popup.")
+    .openOn(mymap);
+
+Событие клика на карте:
+map.on('click', function (e) {
+    popup
+        .setLatLng(e.latlng)
+        .setContent("You clicked the map at " + e.latlng)
+        .openOn(map);
+});
+
+Кастомные иконки для маркеров:
+var greenIcon = L.icon({
+    iconUrl: 'leaf-green.png',
+    shadowUrl: 'leaf-shadow.png',
+    iconSize:     [38, 95],
+    shadowSize:   [50, 64],
+    iconAnchor:   [22, 94],
+    shadowAnchor: [4, 62],
+    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
+L.marker([51.5, -0.09], {icon: greenIcon}).addTo(map);
+
+Использование GeoJSON (a geometry, a feature, or a collection of features, точеи, линии, многоугольники, информация об объектам).
+
+var geojsonFeature = {
+    "type": "Feature",
+    "properties": {
+        "name": "Coors Field",
+        "amenity": "Baseball Stadium",
+        "popupContent": "This is where the Rockies play!"
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [-104.99404, 39.75621]
+    }
+};
+GeoJSON layer:
+L.geoJSON(geojsonFeature).addTo(map);
+Можно указывать стиль: цвет, толщину линий, паттерн штрихов, прозрачность.
+
+Для расширения (создания своих маркеров, контролов, слоёв) применяется методы L.Class.extend(), L.Class.include().
+
+Пример:
+L.TileLayer.Kitten = L.TileLayer.extend({
+    getTileUrl: function(coords) {
+        var i = Math.ceil( Math.random() * 4 );
+        return "http://placekitten.com/256/256?image=" + i;
+    },
+    getAttribution: function() {
+        return "<a href='http://placekitten.com/attribution.html'>PlaceKitten</a>"
+    }
+});
+Фабрика по конвенции:
+L.tileLayer.kitten = function() {
+    return new L.TileLayer.Kitten();
+}
+Использование:
+L.tileLayer.kitten().addTo(map);
+
+Основные группы классов:
+L.Map
+L.Control (управлятор слоями, масштаб, зумер)
+L.CRS
+L.Layer (балун, тултип, L.Rectangle, L.Circle, L.TileLayer, L.Marker)
+L.LatLng
+L.Icon
+Утилитные классы
