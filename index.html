@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Leaflet demo</title>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css">
+        <style>
+            html, body, .map {
+                height: 100%;
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map" class="map"></div>
+
+        <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+        <script>
+            var map = L.map('map').setView([55.033362, 82.904828], 13);
+            L.tileLayer('http://gis.emdev.ru/osm_tiles/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+                maxZoom: 18
+            }).addTo(map);
+            var marker = L.marker([55.033362, 82.904828]).addTo(map);
+            var circle = L.circle([55.033462, 82.954928], {
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.5,
+                radius: 500
+            }).addTo(map);
+            var polygon = L.polygon([
+                [55.033662, 82.955928],
+                [55.043682, 82.956928],
+                [55.034662, 82.959928],
+            ]).addTo(map);
+            marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+            circle.bindPopup("I am a circle.");
+            polygon.bindPopup("I am a polygon.");
+            var popup = L.popup();
+            map.on('click', function (e) {
+                popup
+                    .setLatLng(e.latlng)
+                    .setContent("You clicked the map at " + e.latlng)
+                    .openOn(map);
+            });
+        </script>
+    </body>
+</html>
