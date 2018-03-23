@@ -74,7 +74,7 @@ L.tileLayer('//gis.emdev.ru/osm_tiles/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
     maxZoom: 18
 }).addTo(map);
-Рассказать про структуру урла, что можно и другие штуки подставлять.
+Рассказать про структуру урла, что можно и другие штуки подставлять (например, id, accessToken).
 Что яндексовые тайлы не подходят.
 Можно использовать WMS (Web Map Service Interface Standard) и TMS (Tile Map Service).
 
